@@ -16,23 +16,24 @@ bash -c "$(curl -sS https://gitee.com/lwmacct/web-vscode-shell/raw/main/workspac
     git clone https://gitee.com/lwmacct/web-vscode-shell.git /data/docker-data/vscode
    ```
 2. 使用 Docker 运行 web-vscode 
-   ```bash
-   __run_vscode() {
-    docker rm -f vscode
-    #rm -rf /data/docker-data/vscode
-    docker pull registry.cn-hangzhou.aliyuncs.com/lwmacct/code-server:v3.9.3-ls78
-    docker run -itd --name=vscode \
-        --hostname=code \
-        --restart=always \
-        --privileged=true \
-        --net=host \
-        -e PASSWORD="" \
-        -v /proc:/host \
-        -v /data/docker-data/vscode:/config \
-        registry.cn-hangzhou.aliyuncs.com/lwmacct/code-server:v3.9.3-ls78
+    ```bash
+    __run_vscode() {
+        docker rm -f vscode
+        #rm -rf /data/docker-data/vscode/data/machineid
+        #rm -rf /data/docker-data/vscode
+        docker pull registry.cn-hangzhou.aliyuncs.com/lwmacct/code-server:v3.9.3-ls78-base
+        docker run -itd --name=vscode \
+            --hostname=code \
+            --restart=always \
+            --privileged=true \
+            --net=host \
+            -e PASSWORD="" `#引号内可设置登录密码` \
+            -v /proc:/host \
+            -v /data/docker-data/vscode:/config \
+            registry.cn-hangzhou.aliyuncs.com/lwmacct/code-server:v3.9.3-ls78-base
     }
     __run_vscode
-   ```
+    ```
 3. WEB 编辑器运行起来后查看当前设备IP,使用 8443 端口访问 http://youIP:8443
 
 
