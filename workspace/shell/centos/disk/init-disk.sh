@@ -4,7 +4,10 @@
 # 2021-3-10 20:16:06
 
 __init_args() {
-    _rootfs_partition=$(lsblk | grep '/boot$' | awk '{print $1}' | grep -o '[a-z]*')
+
+    # _rootfs_disk=$(lsblk | grep '/boot$' | awk '{print $1}' | grep -o '[a-z]*') # 云服务器无 boot 分区,已弃用
+    # 取得系统盘所在盘符
+    _rootfs_disk=$(lsblk | grep 'part\s/$' -B10 | tac | grep '\sdisk' | head -1 | awk '{print $1}')
     _full_formatting=0
     if [[ "$0" == "full" ]]; then
         _full_formatting=1
@@ -13,7 +16,7 @@ __init_args() {
 
 __disk_umount() {
     echo '开始磁盘卸载....'
-    _disks=$(lsblk -dn | grep -E 'sd|vd|nvme' | awk '{print "/dev/"$1}' | grep -v "$_rootfs_partition.*")
+    _disks=$(lsblk -dn | grep -E 'sd|vd|nvme' | awk '{print "/dev/"$1}' | grep -v "$_rootfs_disk.*")
 
     echo "需要卸载的磁盘-$_disks"
     for _item in $_disks; do
@@ -33,8 +36,8 @@ __disk_umount() {
 
 __formatting() {
     # 循环检测猕猴桃磁盘
-    echo '识别系统盘为: '$_rootfs_partition' 开始初始化磁盘...'
-    _disks=$(lsblk -dn | grep -E 'sd|vd|nvme' | grep -v "$_rootfs_partition.*" | awk '{print $1}')
+    echo "识别系统盘为: $_rootfs_disk 开始初始化磁盘..."
+    _disks=$(lsblk -dn | grep -E 'sd|vd|nvme' | grep -v "$_rootfs_disk.*" | awk '{print $1}')
     for _item in $_disks; do
         # 如果磁盘未格式化
         _is_havue=$(blkid | grep -c "$_item"'.* LABEL="kuaicdn"')
