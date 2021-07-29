@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# 内核参数 调优
 
 curl -o /etc/sysctl.d/98-sysctl.conf https://gitee.com/lwmacct/web-vscode-shell/raw/main/workspace/shell/centos/kernel/98-sysctl.conf
 
