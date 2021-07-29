@@ -7,7 +7,7 @@ __init_args() {
 
     # _rootfs_disk=$(lsblk | grep '/boot$' | awk '{print $1}' | grep -o '[a-z]*') # 云服务器无 boot 分区,已弃用
     # 取得系统盘所在盘符
-    _rootfs_disk=$(lsblk | grep 'part\s/$' -B10 | tac | grep '\sdisk' | head -1 | awk '{print $1}')
+    _rootfs_disk=$(lsblk | grep '\s/$' -B10 | tac | grep '\sdisk' | head -1 | awk '{print $1}')
     _full_formatting=0
     if [[ "$0" == "full" ]]; then
         _full_formatting=1
