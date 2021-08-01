@@ -66,7 +66,7 @@ __formatting() {
 
 __mount() {
     sed -in-place -e '\/tmp\/disk.*/d' /etc/fstab
-    sed -in-place -e '\/data[0-9]\{1,2\}.*/d' /etc/fstab # 兼容Dcache自带格盘脚本
+    sed -in-place -e '\/data[0-9]\{1,2\}.*/d' /etc/fstab
 
     blkid -s "LABEL" -s "UUID" -s 'TYPE' | grep kuaicdn | grep -Eo '[0-9a-z-]{36}.*' | sed 's/"//g' | sed 's/TYPE=//g' | awk -F "-| " '{print "echo \"UUID=" $1"-"$2"-"$3"-"$4"-"$5 " /tmp/disk/"$1" "$6" defaults,noatime,nodiratime  0 0\" >> /etc/fstab; mkdir -p /tmp/disk/"$1}' | sh
     mount -a
