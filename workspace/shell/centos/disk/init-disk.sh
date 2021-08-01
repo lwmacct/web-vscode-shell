@@ -26,7 +26,7 @@ __disk_umount() {
             echo "lsof -t $_item2" | sh | awk '{print "kill -9 "$0}' | sh
             echo "lsof -t $_item2" | sh | awk '{print "kill -9 "$0}' | sh
             echo "lsof -t $_item2" | sh | awk '{print "kill -9 "$0}' | sh
-            umount -f $_item2 >/dev/null 2>&1
+            umount -f "$_item2" >/dev/null 2>&1
         done
     done
     sync
@@ -45,13 +45,7 @@ __formatting() {
             _is_havue=0
         fi
         if ((_is_havue != 1)); then
-            # 兼容旧版Dcache一键格式化磁盘,保留数据
-            _monoblock=$(blkid | grep -c "$_item:.* UUID.*xfs")
-            if ((_monoblock == 1)); then
-                echo "检测到磁盘 ${_item} 为整盘 xfs,执行打标记并略过格式化..."
-                xfs_admin -L kuaicdn /dev/"${_item}" >/dev/null 2>&1
-                continue
-            fi
+
             dd if=/dev/zero of=/dev/"$_item" bs=512K count=1 >/dev/null 2>&1
             parted -s /dev/"$_item" mklabel gpt
             parted -s /dev/"$_item" mkpart kuaicdn xfs 0% 100%
@@ -72,7 +66,6 @@ __formatting() {
 
 __mount() {
     sed -in-place -e '\/tmp\/disk.*/d' /etc/fstab
-    sed -in-place -e '\/kuaicdn\/disk.*/d' /etc/fstab    # 兼容2020年早期挂盘路径
     sed -in-place -e '\/data[0-9]\{1,2\}.*/d' /etc/fstab # 兼容Dcache自带格盘脚本
 
     blkid -s "LABEL" -s "UUID" -s 'TYPE' | grep kuaicdn | grep -Eo '[0-9a-z-]{36}.*' | sed 's/"//g' | sed 's/TYPE=//g' | awk -F "-| " '{print "echo \"UUID=" $1"-"$2"-"$3"-"$4"-"$5 " /tmp/disk/"$1" "$6" defaults,noatime,nodiratime  0 0\" >> /etc/fstab; mkdir -p /tmp/disk/"$1}' | sh
@@ -90,7 +83,6 @@ __init_yum() {
 
 __init_args "$@"
 __init_yum
-__disk_umount
 __disk_umount
 __formatting
 __mount
