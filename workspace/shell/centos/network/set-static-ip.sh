@@ -1,6 +1,6 @@
 #!/bin/bash
 # 设置静态IP
-# /opt/set-static-ip.sh p4p1 192.168.2.254 192.168.2.2 24 11
+# /opt/set-static-ip.sh p4p1    192.168.2.254 192.168.2.2 24 11
 # /opt/set-static-ip.sh p4p1.99 192.168.2.254 192.168.2.2 24 12
 
 __init_args() {
@@ -91,4 +91,10 @@ ping -c2 -W1 baidu.com
 
 __Help() {
     bash -c "$(curl -sS https://gitee.com/lwmacct/web-vscode-shell/raw/main/workspace/shell/centos/network/set-static-ip.sh)"
+
+    curl -o /opt/set-static-ip.sh https://gitee.com/lwmacct/web-vscode-shell/raw/main/workspace/shell/centos/network/set-static-ip.sh && chmod 777 /opt/set-static-ip.sh
+    
+    /opt/set-static-ip.sh p4p1    192.168.2.254 192.168.2.2 24 11
+    /opt/set-static-ip.sh p4p1.99 192.168.2.254 192.168.2.2 24 12
+
 }
