@@ -36,7 +36,7 @@ __formatting() {
     _all_disk=$(lsblk -dn | grep -E 'sd|vd|nvme' | grep -v "$_rootfs_disk.*" | awk '{print $1}')
     for _item in $_all_disk; do
         # 如果磁盘未格式化
-        _is_label=$(blkid | grep -c "$_item"'.* LABEL="(kuaicdn|data)"')
+        _is_label=$(blkid | grep -Ec "$_item"'.* LABEL="(kuaicdn|data)"')
 
         # 如果传递的参数标 mkfs 为 yes 那么将直接格式化
         if [[ "$_is_mkfs" == "yes" ]]; then
