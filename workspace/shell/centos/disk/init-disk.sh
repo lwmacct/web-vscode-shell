@@ -23,7 +23,6 @@ __disk_umount() {
         done
     done
 }
-__disk_umount
 
 __formatting() {
     # 循环检测猕猴桃磁盘
