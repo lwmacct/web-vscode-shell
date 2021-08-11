@@ -40,7 +40,6 @@ __formatting() {
         if [[ "$_is_mkfs" == "yes" ]]; then
             _is_label=0
         fi
-
         if ((_is_label != 1)); then
 
             dd if=/dev/zero of=/dev/"$_item" bs=512K count=1 >/dev/null 2>&1
