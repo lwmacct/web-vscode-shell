@@ -15,41 +15,41 @@ __init_args() {
 
 __disk_umount() {
     echo '开始磁盘卸载....'
-    _disks=$(lsblk -dn | grep -E 'sd|vd|nvme' | awk '{print "/dev/"$1}' | grep -v "$_rootfs_disk.*")
+    _all_disk=$(lsblk -dn | grep -E 'sd|vd|nvme' | awk '{print "/dev/"$1}' | grep -v "$_rootfs_disk.*")
 
-    echo "需要卸载的磁盘-$_disks"
-    for _item in $_disks; do
+    echo -e "需要卸载的磁盘\n $_all_disk"
+    for _item in $_all_disk; do
         _subarea=$(blkid | grep $_item | awk -F ":" '{print $1}')
         # 杀死占用
         echo "开始卸载磁盘: $_item 分区: $_subarea"
         for _item2 in $_subarea; do
-            echo "lsof -t $_item2" | sh | awk '{print "kill -9 "$0}' | sh
-            echo "lsof -t $_item2" | sh | awk '{print "kill -9 "$0}' | sh
-            echo "lsof -t $_item2" | sh | awk '{print "kill -9 "$0}' | sh
+            lsof -t "$_item2" | awk '{print "kill -9 " $1}' | sh
+            lsof -t "$_item2" | awk '{print "kill -9 " $1}' | sh
             umount -f "$_item2" >/dev/null 2>&1
         done
     done
-    sync
     echo '卸载完毕'
 }
 
 __formatting() {
     # 循环检测猕猴桃磁盘
     echo "识别系统盘为: $_rootfs_disk 开始初始化磁盘..."
-    _disks=$(lsblk -dn | grep -E 'sd|vd|nvme' | grep -v "$_rootfs_disk.*" | awk '{print $1}')
-    for _item in $_disks; do
+    _all_disk=$(lsblk -dn | grep -E 'sd|vd|nvme' | grep -v "$_rootfs_disk.*" | awk '{print $1}')
+    for _item in $_all_disk; do
         # 如果磁盘未格式化
-        _is_havue=$(blkid | grep -c "$_item"'.* LABEL="kuaicdn"')
+        _is_label=$(blkid | grep -c "$_item"'.* LABEL="kuaicdn"')
         # 如果标记 curl 参数标记为 full 那么将直接格式化
         if ((_full_formatting == 1)); then
-            _is_havue=0
+            _is_label=0
         fi
-        if ((_is_havue != 1)); then
+        if ((_is_label != 1)); then
 
             dd if=/dev/zero of=/dev/"$_item" bs=512K count=1 >/dev/null 2>&1
             parted -s /dev/"$_item" mklabel gpt
-            parted -s /dev/"$_item" mkpart kuaicdn xfs 0% 100%
+            parted -s /dev/"$_item" mkpart lwmacct xfs 0% 100%
             echo '磁盘: '"$_item 正在格式化..."
+
+            # 判断是否为 nvme盘,以便设置识别一个分区名
             _is_nvme=$(echo "$_item" | grep -c "nvme")
             if ((_is_nvme == 1)); then
                 _p="p1"
@@ -59,7 +59,7 @@ __formatting() {
             mkfs.xfs -f /dev/"${_item}${_p}" >/dev/null 2>&1
             xfs_admin -L kuaicdn /dev/"${_item}${_p}" >/dev/null 2>&1
         else
-            echo -e "磁盘: $_item 已是 KuaiCDN 数据盘，无需格式化"
+            echo -e "磁盘: $_item 已是数据盘，无需格式化"
         fi
     done
 }
