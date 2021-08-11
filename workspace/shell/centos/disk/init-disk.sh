@@ -7,10 +7,9 @@ __init_args() {
 
     # 取得系统盘所在盘符
     _rootfs_disk=$(lsblk | grep '\s/$' -B10 | tac | grep '\sdisk' | head -1 | awk '{print $1}')
-    _full_formatting=0
-    if [[ "$0" == "full" ]]; then
-        _full_formatting=1
-    fi
+
+    _is_mkfs=$(echo "$@" | grep -Eo 'mkfs=\S*?' | awk -F '=' '{print $NF}')
+
 }
 
 __disk_umount() {
@@ -37,11 +36,13 @@ __formatting() {
     _all_disk=$(lsblk -dn | grep -E 'sd|vd|nvme' | grep -v "$_rootfs_disk.*" | awk '{print $1}')
     for _item in $_all_disk; do
         # 如果磁盘未格式化
-        _is_label=$(blkid | grep -c "$_item"'.* LABEL="kuaicdn"')
-        # 如果标记 curl 参数标记为 full 那么将直接格式化
-        if ((_full_formatting == 1)); then
+        _is_label=$(blkid | grep -c "$_item"'.* LABEL="(kuaicdn|data)"')
+
+        # 如果传递的参数标 mkfs 为 yes 那么将直接格式化
+        if [[ "$_is_mkfs" == "yes" ]]; then
             _is_label=0
         fi
+
         if ((_is_label != 1)); then
 
             dd if=/dev/zero of=/dev/"$_item" bs=512K count=1 >/dev/null 2>&1
@@ -57,7 +58,7 @@ __formatting() {
                 _p="1"
             fi
             mkfs.xfs -f /dev/"${_item}${_p}" >/dev/null 2>&1
-            xfs_admin -L kuaicdn /dev/"${_item}${_p}" >/dev/null 2>&1
+            xfs_admin -L data /dev/"${_item}${_p}" >/dev/null 2>&1
         else
             echo -e "磁盘: $_item 已是数据盘，无需格式化"
         fi
@@ -68,7 +69,7 @@ __mount() {
     sed -in-place -e '\/tmp\/disk.*/d' /etc/fstab
     sed -in-place -e '\/data[0-9]\{1,2\}.*/d' /etc/fstab
 
-    blkid -s "LABEL" -s "UUID" -s 'TYPE' | grep kuaicdn | grep -Eo '[0-9a-z-]{36}.*' | sed 's/"//g' | sed 's/TYPE=//g' | awk -F "-| " '{print "echo \"UUID=" $1"-"$2"-"$3"-"$4"-"$5 " /tmp/disk/"$1" "$6" defaults,noatime,nodiratime  0 0\" >> /etc/fstab; mkdir -p /tmp/disk/"$1}' | sh
+    blkid -s "LABEL" -s "UUID" -s 'TYPE' | grep kuaicdn | grep -Eo '[0-9a-z-]{36}.*' | sed 's/"//g' | sed 's/TYPE=//g' | awk -F "-| " '{print "echo \"UUID=" $1"-"$2"-"$3"-"$4"-"$5 " /disk/"$1" "$6" defaults,noatime,nodiratime  0 0\" >> /etc/fstab; mkdir -p /disk/"$1}' | sh
     mount -a
 }
 
