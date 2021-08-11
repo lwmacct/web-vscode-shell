@@ -4,21 +4,18 @@
 # 2021-3-10 20:16:06
 
 __init_args() {
-
     # 取得系统盘所在盘符
-
     _rootfs_disk=$(lsblk | grep '\s/$' -B10 | tac | grep '\sdisk' | head -1 | awk '{print $1}')
     _is_mkfs=$(echo "$@" | grep -Eo 'mkfs=\S*?' | awk -F '=' '{print $NF}')
 
 }
 
 __disk_umount() {
-    _all_disk=$(lsblk -dn | grep -E 'sd|vd|nvme' | awk '{print "/dev/"$1}' | grep -v "$_rootfs_disk.*")
+    _all_disk=$(lsblk -dn | grep -E 'sd|vd|nvme' | awk '{print "/dev/"$1}' | grep -v "$_rootfs_disk$")
 
     for _item in $_all_disk; do
         _subarea=$(blkid | grep "$_item" | awk -F ":" '{print $1}')
         echo "开始卸载磁盘: $_item "
-        # echo "开始卸载磁盘: $_item 分区: $(echo "$_subarea" | tr -d $'\r')"
         for _item2 in $_subarea; do
             lsof -t "$_item2" | awk '{print "kill -9 " $1}' | sh # 杀死占用
             lsof -t "$_item2" | awk '{print "kill -9 " $1}' | sh # 杀死占用
@@ -31,7 +28,7 @@ __disk_umount
 __formatting() {
     # 循环检测猕猴桃磁盘
     echo -e "\n识别系统盘为: $_rootfs_disk 开始初始化磁盘..."
-    _all_disk=$(lsblk -dn | grep -E 'sd|vd|nvme' | grep -v "$_rootfs_disk.*" | awk '{print $1}')
+    _all_disk=$(lsblk -dn | grep -E 'sd|vd|nvme' | awk '{print "/dev/"$1}' | grep -v "$_rootfs_disk$")
     for _item in $_all_disk; do
         # 如果磁盘未格式化
         _is_label=$(blkid | grep -Ec "$_item"'.* LABEL="(kuaicdn|data)"')
@@ -40,11 +37,11 @@ __formatting() {
         if [[ "$_is_mkfs" == "yes" ]]; then
             _is_label=0
         fi
-        if ((_is_label != 1)); then
 
-            dd if=/dev/zero of=/dev/"$_item" bs=512K count=1 >/dev/null 2>&1
-            parted -s /dev/"$_item" mklabel gpt
-            parted -s /dev/"$_item" mkpart lwmacct xfs 0% 100%
+        if ((_is_label != 1)); then
+            dd if=/dev/zero of="$_item" bs=512K count=1 >/dev/null 2>&1
+            parted -s "$_item" mklabel gpt
+            parted -s "$_item" mkpart lwmacct xfs 0% 100%
             echo '磁盘: '"$_item 正在格式化..."
 
             # 判断是否为 nvme盘,以便设置识别一个分区名
@@ -54,8 +51,8 @@ __formatting() {
             else
                 _p="1"
             fi
-            mkfs.xfs -f /dev/"${_item}${_p}" >/dev/null 2>&1
-            xfs_admin -L data /dev/"${_item}${_p}" >/dev/null 2>&1
+            mkfs.xfs -f "${_item}${_p}" >/dev/null 2>&1
+            xfs_admin -L data "${_item}${_p}" >/dev/null 2>&1
         else
             echo -e "磁盘: $_item 已是数据盘，无需格式化"
         fi
@@ -86,7 +83,6 @@ __formatting
 __mount
 
 echo '************** 磁盘初始化结束 **************'
-sync
 
 __help() {
     bash -c "$(curl -sS https://gitee.com/lwmacct/web-vscode-shell/raw/main/workspace/shell/centos/disk/init-disk.sh)"
