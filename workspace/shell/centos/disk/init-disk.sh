@@ -66,6 +66,7 @@ __mount() {
     mount -a
 }
 
+# 解决读不到UUID的磁盘挂载
 __write_file_mount_no_uuid() {
     cat >/etc/init.d/mount_no_uuid <<-'AEOF'
 #!/usr/bin/env bash
