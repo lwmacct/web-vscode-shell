@@ -91,8 +91,8 @@ __main() {
 __main
 AEOF
     chmod 777 /etc/init.d/mount_no_uuid
-    chkconfig --add mount_no_uuid
-    chkconfig mount_no_uuid on
+    chkconfig --add /etc/init.d/mount_no_uuid
+    chkconfig /etc/init.d/mount_no_uuid on
 }
 
 __init_yum() {
