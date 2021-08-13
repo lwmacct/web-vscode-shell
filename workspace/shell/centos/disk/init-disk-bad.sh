@@ -59,41 +59,39 @@ __formatting() {
 }
 
 __mount() {
-    sed -in-place -e '\/disk.*/d' /etc/fstab
-    sed -in-place -e '\/data[0-9]\{1,2\}.*/d' /etc/fstab
+    sed -in-place -e '\/tmp\/disk.*/d' /etc/fstab
+    sed -in-place -e '\/kuaicdn\/disk.*/d' /etc/fstab    # 兼容2020年早期挂盘路径
+    sed -in-place -e '\/data[0-9]\{1,2\}.*/d' /etc/fstab # 兼容Dcache自带格盘脚本
 
-    blkid -s "LABEL" -s "UUID" -s 'TYPE' | grep -E "kuaicdn|data" | grep -Eo '[0-9a-z-]{36}.*' | sed 's/"//g' | sed 's/TYPE=//g' | awk -F "-| " '{print "echo \"UUID=" $1"-"$2"-"$3"-"$4"-"$5 " /disk/"$1" "$6" defaults,noatime,nodiratime  0 0\" >> /etc/fstab; mkdir -p /disk/"$1}' | sh
-    mount -a
-}
+    # blkid -s "LABEL" -s "UUID" -s 'TYPE' | grep kuaicdn | grep -Eo '[0-9a-z-]{36}.*' | sed 's/"//g' | sed 's/TYPE=//g' | awk -F "-| " '{print "echo \"UUID=" $1"-"$2"-"$3"-"$4"-"$5 " /tmp/disk/"$1" "$6" defaults,noatime,nodiratime  0 0\" >> /etc/fstab; mkdir -p /tmp/disk/"$1}' | sh
 
-__write_file_mount_no_uuid() {
-    cat >/etc/init.d/mount_no_uuid <<-'AEOF'
-#!/usr/bin/env bash
-# chkconfig: 2345 10 90
-__main() {
+    _disks=$(lsblk -dn | grep -E 'sd|vd|nvme' | awk '{print $1}' | grep -v "$_rootfs_partition$")
+    for _item in $_disks; do
+        # 如果磁盘未格式化
 
-    _lsblk=$(lsblk)
-    _rootfs_disk=$(lsblk | grep '\s/$' -B10 | tac | grep '\sdisk' | head -1 | awk '{print $1}')
-    _disk_label=$(blkid -s "LABEL" | grep -E 'LABEL="(kuaicdn|data)"')
-    _all_disk=$(lsblk -dn | grep -E 'sd|vd|nvme' | awk '{print $1}' | grep -v "$_rootfs_disk$")
+        # _is_havue=$(blkid | grep -c "$_item"'.* LABEL="kuaicdn"')
+        _is_nvme=$(echo "$_item" | grep -c "nvme")
+        if ((_is_nvme == 1)); then
+            _p="p1"
+        else
+            _p="1"
+        fi
 
-    for item in $_all_disk; do
-        _is=$(echo "$_disk_label" | grep -c "$item")
-        if ((_is == 0)); then
-            _part=$(echo "$_lsblk" | grep -o "$item.*part\s" | head -1 | awk '{print $1}') # 得到分区
-            _mount_dir=$(echo "$_part" | md5sum | cut -c1-8)
-            mkdir -p "/disk/$_mount_dir"
-            mount -o noatime -o nodiratime /dev/"$_part" "/disk/$_mount_dir" 2>/dev/null
+        _is_havue=$(xfs_admin -l /dev/"${_item}${_p}" | grep -c kuaicdn)
+        if ((_is_havue != 1)); then
+            _is_havue=$(e2label /dev/"${_item}${_p}" | grep -c kuaicdn)
+        fi
+        if ((_is_havue == 1)); then
+            #  '{print "echo \"UUID=" $1"-"$2"-"$3"-"$4"-"$5 " /tmp/disk/"$1" "$6" defaults,noatime,nodiratime  0 0\" >> /etc/fstab; mkdir -p /tmp/disk/"$1}' | sh
+
+            _md5=$(echo "${_item}${_p}" | md5sum | cut -b 1-8)
+            mkdir -p "/tmp/disk/$_md5"
+            echo "/dev/${_item}${_p} /tmp/disk/$_md5 xfs defaults,noatime,nodiratime  0 0" >>/etc/fstab
+            echo -e "磁盘: $_item 开始挂载"
         fi
     done
+    mount -a
 }
-__main
-AEOF
-    chmod 777 /etc/init.d/mount_no_uuid
-    chkconfig --add mount_no_uuid
-    chkconfig mount_no_uuid on
-}
-
 __init_yum() {
     # 检查并安装常用工具
     _is_install=$(yum list installed lsof | grep -Ec 'lsof')
@@ -108,8 +106,6 @@ __init_yum
 __disk_umount
 __formatting
 __mount
-__write_file_mount_no_uuid
-/etc/init.d/mount_no_uuid
 
 echo '************** 磁盘初始化结束 **************'
 
