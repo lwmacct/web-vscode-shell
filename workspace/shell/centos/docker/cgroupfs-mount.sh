@@ -102,7 +102,7 @@ fi
 exit 0
 
 __help() {
-    bash -c "$(curl -sS https://gitee.com/lwmacct/web-vscode-shell/raw/main/workspace/shell/centos/docker/repair_cgroup.sh)"
+    bash -c "$(curl -sS https://gitee.com/lwmacct/web-vscode-shell/raw/main/workspace/shell/centos/docker/cgroupfs-mount.sh)"
     cat >/dev/null <<-'AEOF'
 该脚本在以下文章中又有用,调整路径时需要及时更新
 https://www.yuque.com/uuu/docker/repair_cgroup
