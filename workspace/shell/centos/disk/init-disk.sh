@@ -5,7 +5,7 @@
 
 __init_args() {
     # 取得系统盘所在盘符
-    _rootfs_disk=$(lsblk | grep '\s/$' -B10 | tac | grep '\sdisk' | head -1 | awk '{print $1}')
+    _rootfs_disk=$(lsblk 2>/dev/null | grep '\s/$' -B10 | tac | grep '\sdisk' | head -1 | awk '{print $1}')
     _is_mkfs=$(echo "$@" | grep -Eo 'mkfs=\S*?' | awk -F '=' '{print $NF}')
 
 }
