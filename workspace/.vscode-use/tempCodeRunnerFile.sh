@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 
 __git_push() {
     git rm -r --cached ~
