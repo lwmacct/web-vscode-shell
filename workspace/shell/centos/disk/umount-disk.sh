@@ -29,6 +29,7 @@ __disk_umount
 echo '************** 磁盘初始化结束 **************'
 
 __help() {
+
     bash -c "$(curl -sS https://gitee.com/lwmacct/web-vscode-shell/raw/main/workspace/shell/centos/disk/umount-disk.sh)"
 
     cat >/tmp/items <<-'AEOF'
