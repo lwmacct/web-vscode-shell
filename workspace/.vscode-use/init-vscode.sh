@@ -5,21 +5,20 @@ __host() {
     nsenter --mount=/host/1/ns/mnt
 }
 
-# 本编辑器启动时的代码
 __run_vscode() {
     docker rm -f vscode
-    #rm -rf /data/docker-data/vscode/data/machineid
-    #rm -rf /data/docker-data/vscode
-    docker pull registry.cn-hangzhou.aliyuncs.com/lwmacct/code-server:v3.9.3-ls78-base
+    rm -rf /data/docker-data/vscode/.local/share/code-server
+    docker pull registry.cn-hangzhou.aliyuncs.com/lwmacct/code-server:v3.11.1-ls11
     docker run -itd --name=vscode \
         --hostname=code \
         --restart=always \
         --privileged=true \
         --net=host \
-        -e PASSWORD="" `#引号内可设置登录密码` \
         -v /proc:/host \
-        -v /data/docker-data/vscode:/config \
-        registry.cn-hangzhou.aliyuncs.com/lwmacct/code-server:v3.9.3-ls78-base
+        -v /data/docker-data/vscode:/root/ \
+        -e DOMAIN='192.168.9.17' \
+        -e PASSWORD='EEcNp7Um' \
+        registry.cn-hangzhou.aliyuncs.com/lwmacct/code-server:v3.11.1-ls11
 }
 __run_vscode
 

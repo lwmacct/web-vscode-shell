@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 __git_push() {
-    # git rm -r --cached /config
-    git add /config
+    git rm -r --cached /config
+    git add /root
     git commit -m "init"
     git branch -M main
     git push -f -u origin main
