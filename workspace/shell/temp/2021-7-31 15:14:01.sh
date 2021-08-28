@@ -1,40 +1,10 @@
-#!/usr/bin/env bash
-
-__mian() {
-	_path=/data/docker-volume/test_volume_102
-	mkdir -p $_path
-	docker volume create -d local -o type=none -o device=$_path -o o=bind --name=test_volume_102
-}
-__mian
-
-_name=test_container_100
-docker rm -f $_name
-
-__run() {
-	_name=test_container_100
-	docker rm -f $_name
-	docker run -itd --name=$_name \
-		--hostname=$_name \
-		--restart=always \
-		--net=host \
-		--privileged \
-		-v ln-100:/apps/data \
-		-v /proc:/host/:ro \
-		-v /data/docker-share/:/apps/share/ \
-		-v /data/docker-data/zabbix/dcache:/apps/data \
-		registry.cn-hangzhou.aliyuncs.com/lwmacct/ubuntu:v1
-}
-__run
-
-__run_manage() {
-	_name=test_container_100
-	docker rm -f $_name
-	docker run -itd --name=$_name \
-		--restart=always \
-		--net=host \
-		--privileged \
-		-v /proc:/host/:ro \
-		-v ln-100:/apps/data \
-		registry.cn-hangzhou.aliyuncs.com/lwmacct/ubuntu:v1
-}
-__run_manage
+type=static nic=ens224 vlan=1060 ip_mask=222.188.122.226/30 gateway=222.188.122.225
+type=static nic=ens224 vlan=1061 ip_mask=222.188.122.242/30 gateway=222.188.122.241
+type=static nic=ens224 vlan=1062 ip_mask=222.188.122.246/30 gateway=222.188.122.245
+type=static nic=ens224 vlan=1063 ip_mask=222.188.122.250/30 gateway=222.188.122.249
+type=static nic=ens224 vlan=1064 ip_mask=222.188.122.254/30 gateway=222.188.122.253
+type=static nic=ens224 vlan=1065 ip_mask=222.188.123.186/30 gateway=222.188.123.185
+type=static nic=ens224 vlan=1066 ip_mask=222.188.126.2/30 gateway=222.188.126.1
+type=static nic=ens224 vlan=1067 ip_mask=222.188.126.6/30 gateway=222.188.126.5
+type=static nic=ens224 vlan=1068 ip_mask=222.188.126.18/30 gateway=222.188.126.17
+type=static nic=ens224 vlan=1069 ip_mask=222.188.126.22/30 gateway=222.188.126.21
