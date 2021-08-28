@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# chkconfig: 2345 11 91
+# chkconfig: 35 11 91
 # admin lwmacct url lwm.icu
 # date 2021-8-28 18:38:34
 
@@ -99,6 +99,7 @@ __read_config() {
 }
 
 __mian() {
+    sleep 5s
     _f_ip_info=/data/network/ipv4_static.txt
     __read_config
 }
