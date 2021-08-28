@@ -113,16 +113,10 @@ type=static nic=ens224 vlan=1069 ip_mask=222.188.126.22/30 gateway=222.188.126.2
 AA
 }
 
-__use() {
+__install() {
     __set_ip
-    curl -o /etc/init.d/ipv4-static-bgp-shunt https://gitee.com/lwmacct/web-vscode-shell/raw/main/workspace/shell/centos/network/ipv4-static-bgp-shunt.sh
-    chmod 777 /etc/init.d/ipv4-static-bgp-shunt
-    chkconfig --add ipv4-static-bgp-shunt
-    chkconfig ipv4-static-bgp-shunt on
-}
-
-__help() {
-
-    exit
-    # 看 __use
+    curl -o /etc/init.d/ipv4_static_bgp_shunt https://gitee.com/lwmacct/web-vscode-shell/raw/main/workspace/shell/centos/network/ipv4_static_bgp_shunt.sh
+    chmod 777 /etc/init.d/ipv4_static_bgp_shunt
+    chkconfig --add ipv4_static_bgp_shunt
+    chkconfig ipv4_static_bgp_shunt on
 }
