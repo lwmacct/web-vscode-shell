@@ -99,7 +99,6 @@ __read_config() {
 }
 
 __mian() {
-    sleep 5s
     _f_ip_info=/data/network/ipv4_static.txt
     __read_config
 }
