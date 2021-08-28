@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 __git_push() {
-    git rm -r --cached ~
+    # git rm -r --cached ~
     git add ~
     git commit -m "init"
     git branch -M main

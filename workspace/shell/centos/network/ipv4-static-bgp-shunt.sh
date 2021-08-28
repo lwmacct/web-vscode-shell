@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# chkconfig: 35 11 91
+# chkconfig: 35 110 910
 # admin lwmacct url lwm.icu
 # date 2021-8-28 18:38:34
 
