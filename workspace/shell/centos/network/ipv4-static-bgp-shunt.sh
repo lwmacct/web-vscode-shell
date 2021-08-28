@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# chkconfig: 2345 10 90
+# chkconfig: 3 21 91
 # admin lwmacct url lwm.icu
 # date 2021-8-28 18:38:34
 
@@ -104,7 +104,17 @@ __mian() {
 }
 __mian
 
+__set_ip() {
+    mkdir -p /data/network/
+    cat >/data/network/ipv4_static.txt <<"AA"
+type=static nic=ens224 vlan=1067 ip_mask=222.188.126.6/30  gateway=222.188.126.5
+type=static nic=ens224 vlan=1068 ip_mask=222.188.126.18/30 gateway=222.188.126.17
+type=static nic=ens224 vlan=1069 ip_mask=222.188.126.22/30 gateway=222.188.126.21
+AA
+}
+
 __use() {
+    __set_ip
     curl -o /etc/init.d/ipv4-static-bgp-shunt https://gitee.com/lwmacct/web-vscode-shell/raw/main/workspace/shell/centos/network/ipv4-static-bgp-shunt.sh
     chmod 777 /etc/init.d/ipv4-static-bgp-shunt
     chkconfig --add ipv4-static-bgp-shunt
@@ -112,11 +122,6 @@ __use() {
 }
 
 __help() {
-    cat >/data/network/ipv4_static.txt <<"AA"
-type=static nic=ens224 vlan=1067 ip_mask=222.188.126.6/30  gateway=222.188.126.5
-type=static nic=ens224 vlan=1068 ip_mask=222.188.126.18/30 gateway=222.188.126.17
-type=static nic=ens224 vlan=1069 ip_mask=222.188.126.22/30 gateway=222.188.126.21
-AA
 
     exit
     # 看 __use
