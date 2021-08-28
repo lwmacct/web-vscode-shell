@@ -104,11 +104,3 @@ __mian() {
 }
 __mian
 
-
-__install() {
-    __set_ip
-    curl -o /etc/init.d/ipv4_static_bgp_shunt https://gitee.com/lwmacct/web-vscode-shell/raw/main/workspace/shell/centos/network/ipv4_static_bgp_shunt.sh
-    chmod 777 /etc/init.d/ipv4_static_bgp_shunt
-    chkconfig --add ipv4_static_bgp_shunt
-    chkconfig ipv4_static_bgp_shunt on
-}
