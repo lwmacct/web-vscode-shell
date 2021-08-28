@@ -1,10 +1,50 @@
-type=static nic=ens224 vlan=1060 ip_mask=222.188.122.226/30 gateway=222.188.122.225
-type=static nic=ens224 vlan=1061 ip_mask=222.188.122.242/30 gateway=222.188.122.241
-type=static nic=ens224 vlan=1062 ip_mask=222.188.122.246/30 gateway=222.188.122.245
-type=static nic=ens224 vlan=1063 ip_mask=222.188.122.250/30 gateway=222.188.122.249
-type=static nic=ens224 vlan=1064 ip_mask=222.188.122.254/30 gateway=222.188.122.253
-type=static nic=ens224 vlan=1065 ip_mask=222.188.123.186/30 gateway=222.188.123.185
-type=static nic=ens224 vlan=1066 ip_mask=222.188.126.2/30 gateway=222.188.126.1
-type=static nic=ens224 vlan=1067 ip_mask=222.188.126.6/30 gateway=222.188.126.5
-type=static nic=ens224 vlan=1068 ip_mask=222.188.126.18/30 gateway=222.188.126.17
-type=static nic=ens224 vlan=1069 ip_mask=222.188.126.22/30 gateway=222.188.126.21
+gateway=218.92.197.193
+gateway=218.92.197.201
+gateway=218.92.197.205
+gateway=218.92.197.209
+gateway=218.92.197.217
+gateway=218.92.197.213
+gateway=218.92.197.233
+gateway=218.92.197.237
+gateway=218.92.197.241
+gateway=222.188.116.141
+gateway=222.188.116.133
+gateway=222.188.116.137
+gateway=222.188.116.145
+gateway=222.188.116.149
+gateway=222.188.116.153
+gateway=222.188.116.157
+gateway=222.188.116.161
+gateway=222.188.116.173
+gateway=222.188.116.169
+gateway=222.188.116.165
+gateway=222.188.116.201
+gateway=222.188.116.193
+gateway=222.188.116.189
+gateway=222.188.116.185
+gateway=222.188.116.213
+gateway=222.188.116.197
+gateway=222.188.116.181
+gateway=222.188.116.177
+gateway=222.188.116.237
+gateway=222.188.116.225
+gateway=222.188.116.229
+gateway=222.188.116.233
+gateway=222.188.116.221
+gateway=222.188.116.209
+gateway=222.188.116.205
+gateway=222.188.120.233
+gateway=222.188.120.237
+gateway=222.188.120.241
+gateway=222.188.120.245
+gateway=222.188.122.13
+gateway=222.188.122.225
+gateway=222.188.122.241
+gateway=222.188.122.245
+gateway=222.188.122.249
+gateway=222.188.122.253
+gateway=222.188.123.185
+gateway=222.188.126.1
+gateway=222.188.126.5
+gateway=222.188.126.17
+gateway=222.188.126.21
