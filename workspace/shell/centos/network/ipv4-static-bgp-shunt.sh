@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # chkconfig: 2345 10 90
-
+# admin lwmacct url lwm.icu
+# date 2021-8-28 18:38:34
 
 __set_vnic() {
     # 设置 _vnic_name
