@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# chkconfig: 35 99 99
 # admin lwmacct url lwm.icu
 # date 2021-8-28 18:38:34
 
@@ -99,6 +98,7 @@ __read_config() {
 }
 
 __mian() {
+    sleep 3s
     _f_ip_info=/data/network/ipv4_static.txt
     __read_config
 }
@@ -113,12 +113,16 @@ type=static nic=ens224 vlan=1069 ip_mask=222.188.126.22/30 gateway=222.188.126.2
 AA
 }
 
-__use() {
-    __set_ip
-    curl -o /etc/init.d/ipv4-static-bgp-shunt https://gitee.com/lwmacct/web-vscode-shell/raw/main/workspace/shell/centos/network/ipv4-static-bgp-shunt.sh
-    chmod 777 /etc/init.d/ipv4-static-bgp-shunt
-    chkconfig --add ipv4-static-bgp-shunt
-    chkconfig ipv4-static-bgp-shunt on
+__install() {
+    mkdir -p /data/network/script/
+    curl -o /data/network/script/ipv4-static-bgp-shunt.sh https://gitee.com/lwmacct/web-vscode-shell/raw/main/workspace/shell/centos/network/ipv4-static-bgp-shunt.sh
+    chmod 777 /data/network/script/ipv4-static-bgp-shunt.sh
+    # 设置 /etc/rc.local
+    _is=$(cat /etc/rc.local | grep 'ipv4-static-bgp-shunt.sh' -c)
+    if ((_is == 0)); then
+        echo 'bash /data/network/script/ipv4-static-bgp-shunt.sh &' >>/etc/rc.local
+    fi
+
 }
 
 __help() {
