@@ -13,10 +13,17 @@ __set_vnic() {
     fi
     ip link set "$_vnic_name" up
 
-    # 设置 MACVLAN
+    # 定义 MACVLAN 名称
     _vinc_macvlan="vinc.static.$_mete"
+
+    # 删除旧的 IP macvlan
+    ip link set "$_vinc_macvlan" down
+    ip link del dev "$_vinc_macvlan"
+
+    # 添加新的  macvlan
     ip link add link "$_vnic_name" dev "$_vinc_macvlan" type macvlan mode private
-    # # 设置 IP地址
+
+    # 设置 macvlan IP地址
     ip addr add "$_ip_mask" dev "$_vinc_macvlan"
     ip link set "$_vinc_macvlan" up
 
@@ -103,4 +110,3 @@ __mian() {
     __read_config
 }
 __mian
-
