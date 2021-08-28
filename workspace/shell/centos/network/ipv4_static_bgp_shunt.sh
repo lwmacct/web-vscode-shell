@@ -104,14 +104,6 @@ __mian() {
 }
 __mian
 
-__set_ip() {
-    mkdir -p /data/network/
-    cat >/data/network/ipv4_static.txt <<"AA"
-type=static nic=ens224 vlan=1067 ip_mask=222.188.126.6/30  gateway=222.188.126.5
-type=static nic=ens224 vlan=1068 ip_mask=222.188.126.18/30 gateway=222.188.126.17
-type=static nic=ens224 vlan=1069 ip_mask=222.188.126.22/30 gateway=222.188.126.21
-AA
-}
 
 __install() {
     __set_ip
