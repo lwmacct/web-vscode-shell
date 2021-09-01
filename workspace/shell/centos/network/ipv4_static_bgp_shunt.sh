@@ -102,6 +102,7 @@ __read_config() {
 }
 
 __mian() {
+    ip a | grep -Eo 'vinc.static.[0-9]{3}' | sort -u | xargs -n1 -I {} echo 'ip link set {} down;  ip link del dev {}' | sh
     ip a | grep -Eo 'vnic.static.[0-9]{3}' | sort -u | xargs -n1 -I {} echo 'ip link set {} down;  ip link del dev {}' | sh
     _f_ip_info=/data/network/ipv4_static.txt
     __read_config
