@@ -14,14 +14,14 @@ __set_vnic() {
     ip link set "$_vnic_name" up
 
     # 定义 MACVLAN 名称
-    _vinc_macvlan="vinc.static.$_mete"
+    _vnic_macvlan="vnic.static.$_mete"
 
     # 添加新的  macvlan
-    ip link add link "$_vnic_name" dev "$_vinc_macvlan" type macvlan mode private
+    ip link add link "$_vnic_name" dev "$_vnic_macvlan" type macvlan mode private
 
     # 设置 macvlan IP地址
-    ip addr add "$_ip_mask" dev "$_vinc_macvlan"
-    ip link set "$_vinc_macvlan" up
+    ip addr add "$_ip_mask" dev "$_vnic_macvlan"
+    ip link set "$_vnic_macvlan" up
 
 }
 
@@ -35,7 +35,7 @@ __set_rt_tables() {
 __set_rp_filter() {
     echo 0 >/proc/sys/net/ipv4/conf/default/rp_filter
     echo 0 >/proc/sys/net/ipv4/conf/all/rp_filter
-    echo 0 >/proc/sys/net/ipv4/conf/"$_vinc_macvlan"/rp_filter
+    echo 0 >/proc/sys/net/ipv4/conf/"$_vnic_macvlan"/rp_filter
 }
 
 __set_route_rule() {
@@ -47,13 +47,13 @@ __set_route_rule() {
 }
 
 __set_iptables_1() {
-    iptables -t mangle -A INPUT -i "$_vinc_macvlan" -m state --state NEW -j MARK --set-mark "$_mark16"
+    iptables -t mangle -A INPUT -i "$_vnic_macvlan" -m state --state NEW -j MARK --set-mark "$_mark16"
 }
 
 __set_iptables_2() {
 
     iptables -t mangle -D INPUT "$(iptables -t mangle -nvL INPUT --line-numbers | grep 'state NEW CONNMARK save' | awk '{print $1}' | head -1)" 2>/dev/null
-    iptables -t mangle -A INPUT -i vinc.static.+ -m state --state NEW -j CONNMARK --save-mark --nfmask 0xffffffff --ctmask 0xffffffff
+    iptables -t mangle -A INPUT -i vnic.static.+ -m state --state NEW -j CONNMARK --save-mark --nfmask 0xffffffff --ctmask 0xffffffff
 
     for a in {1..2}; do
         iptables -t mangle -D OUTPUT "$(iptables -t mangle -nvL OUTPUT --line-numbers | grep 'state NEW HMARK mod' | awk '{print $1}' | head -1)" 2>/dev/null
@@ -69,9 +69,9 @@ __set_iptables_2() {
 }
 __set_iptables_nat() {
     for a in {1..2}; do
-        iptables -t nat -D POSTROUTING "$(iptables -t nat -nvL POSTROUTING --line-numbers | grep 'vinc.static.+' | awk '{print $1}' | head -1)" 2>/dev/null
+        iptables -t nat -D POSTROUTING "$(iptables -t nat -nvL POSTROUTING --line-numbers | grep 'vnic.static.+' | awk '{print $1}' | head -1)" 2>/dev/null
     done
-    iptables -t nat -A POSTROUTING -o vinc.static.+ -j MASQUERADE
+    iptables -t nat -A POSTROUTING -o vnic.static.+ -j MASQUERADE
 }
 
 __read_config() {
@@ -102,7 +102,7 @@ __read_config() {
 }
 
 __mian() {
-    ip a | grep -Eo 'vinc.static.[0-9]{3}' | sort -u | xargs -n1 -I {} echo 'ip link set {} down;  ip link del dev {}' | sh
+    ip a | grep -Eo 'vnic.static.[0-9]{3}' | sort -u | xargs -n1 -I {} echo 'ip link set {} down;  ip link del dev {}' | sh
     _f_ip_info=/data/network/ipv4_static.txt
     __read_config
 }
