@@ -105,7 +105,6 @@ __set_static_ip_route() {
 
 __read_config() {
     _mete=100
-    _is_have_ipv4=0
     iptables -t mangle -F INPUT
     while read -r _line; do
         _type=$(echo "$_line" | grep -Eo 'type=\S*?' | awk -F '=' '{print $NF}')
