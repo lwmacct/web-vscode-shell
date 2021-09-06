@@ -124,11 +124,10 @@ __read_config() {
             __set_iptables_1
         fi
     done <"$_f_ip_info"
-    if ((_mete != 100)); then
+
+    if [[ "${_mete}" != "100" ]]; then
         __set_iptables_2
         __set_iptables_nat
-    else
-        echo "啥都没有!!!"
     fi
 
 }
