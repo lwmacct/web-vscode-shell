@@ -138,4 +138,20 @@ __mian() {
 
     __set_static_ip_route
 }
-__mian
+
+case "$1" in
+start)
+    echo "start"
+    __mian
+    ;;
+manage)
+    echo "manage"
+    __set_manage_route_table
+    ;;
+uinstall)
+    echo "uinstall"
+    ;;
+*)
+    echo $"Usage: $0 {start | manage | uinstall}"
+    ;;
+esac
