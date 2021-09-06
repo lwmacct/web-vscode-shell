@@ -114,19 +114,11 @@ __read_config() {
         echo -e "$_type \t$_nic \t$_vlan \t$_ip_mask \t$_gateway"
         if [[ "${_type}" != "" && $_nic != "" ]]; then
             ((_mete++))
-            _mark16=0x$(printf "%x" "$_mete")
-            _mark="$_mete"
-
-            __set_vnic
-            __set_rt_tables
-            __set_rp_filter
-            __set_route_rule
-            __set_iptables_1
+           
 
         fi
     done <"$_f_ip_info"
-    __set_iptables_2
-    __set_iptables_nat
+  
 }
 __read_config
 
