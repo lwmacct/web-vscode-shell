@@ -112,6 +112,7 @@ __read_config() {
         _vlan=$(echo "$_line" | grep -Eo 'vlan=\S*?' | awk -F '=' '{print $NF}')
         _ip_mask=$(echo "$_line" | grep -Eo 'ip_mask=\S*?' | awk -F '=' '{print $NF}')
         _gateway=$(echo "$_line" | grep -Eo 'gateway=\S*?' | awk -F '=' '{print $NF}')
+         echo -e "$_type \t$_nic \t$_vlan \t$_ip_mask \t$_gateway"
         if [[ "${_type}" != "" && $_nic != "" ]]; then
             ((_mete++))
             _mark16=0x$(printf "%x" "$_mete")
