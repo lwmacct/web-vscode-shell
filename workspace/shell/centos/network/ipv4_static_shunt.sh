@@ -105,6 +105,7 @@ __set_static_ip_route() {
 
 __read_config() {
     _mete=100
+    _is_have_ipv4=0
     iptables -t mangle -F INPUT
     while read -r _line; do
         _type=$(echo "$_line" | grep -Eo 'type=\S*?' | awk -F '=' '{print $NF}')
@@ -112,23 +113,27 @@ __read_config() {
         _vlan=$(echo "$_line" | grep -Eo 'vlan=\S*?' | awk -F '=' '{print $NF}')
         _ip_mask=$(echo "$_line" | grep -Eo 'ip_mask=\S*?' | awk -F '=' '{print $NF}')
         _gateway=$(echo "$_line" | grep -Eo 'gateway=\S*?' | awk -F '=' '{print $NF}')
-        echo -e "$_type \t$_nic \t$_vlan \t$_ip_mask \t$_gateway"
         if [[ "${_type}" != "" && $_nic != "" ]]; then
             ((_mete++))
             _mark16=0x$(printf "%x" "$_mete")
             _mark="$_mete"
-
+            echo -e "$_type \t$_nic \t$_vlan \t$_ip_mask \t$_gateway"
             __set_vnic
             __set_rt_tables
             __set_rp_filter
             __set_route_rule
             __set_iptables_1
-
         fi
     done <"$_f_ip_info"
-    __set_iptables_2
-    __set_iptables_nat
+    if [[ "${_is_have_ipv4}" == "1" ]]; then
+        __set_iptables_2
+        __set_iptables_nat
+    else
+        echo "啥都没有!!!"
+    fi
+
 }
+
 __read_config
 
 __mian() {
