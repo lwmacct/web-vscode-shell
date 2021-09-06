@@ -125,7 +125,7 @@ __read_config() {
             __set_iptables_1
         fi
     done <"$_f_ip_info"
-    if [[ "${_is_have_ipv4}" == "1" ]]; then
+    if ((_mete != 100)); then
         __set_iptables_2
         __set_iptables_nat
     else
