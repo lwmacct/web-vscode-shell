@@ -112,7 +112,7 @@ __read_config() {
         _vlan=$(echo "$_line" | grep -Eo 'vlan=\S*?' | awk -F '=' '{print $NF}')
         _ip_mask=$(echo "$_line" | grep -Eo 'ip_mask=\S*?' | awk -F '=' '{print $NF}')
         _gateway=$(echo "$_line" | grep -Eo 'gateway=\S*?' | awk -F '=' '{print $NF}')
-         echo -e "$_type \t$_nic \t$_vlan \t$_ip_mask \t$_gateway"
+        echo -e "$_type \t$_nic \t$_vlan \t$_ip_mask \t$_gateway"
         if [[ "${_type}" != "" && $_nic != "" ]]; then
             ((_mete++))
             _mark16=0x$(printf "%x" "$_mete")
@@ -139,7 +139,6 @@ __mian() {
     ip a | grep -Eo 'vnic.static.[0-9]{3}' | sort -u | xargs -n1 -I {} echo 'ip link set {} down;  ip link del dev {}' | sh
     _f_ip_info=/data/network/ipv4_static.txt
     __read_config
-
     __set_static_ip_route
 }
 
