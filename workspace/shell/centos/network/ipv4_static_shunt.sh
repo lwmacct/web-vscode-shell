@@ -152,6 +152,6 @@ uinstall)
     echo "uinstall"
     ;;
 *)
-    echo $"Usage: $0 {start | manage | uinstall}"
+    echo $"Usage: $0 { start | manage | uinstall }"
     ;;
 esac
