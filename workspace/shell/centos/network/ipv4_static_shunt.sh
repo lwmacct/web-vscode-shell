@@ -67,6 +67,7 @@ __set_iptables_2() {
     iptables -t mangle -A OUTPUT -m state --state RELATED,ESTABLISHED -j CONNMARK --restore-mark --nfmask 0xffffffff --ctmask 0xffffffff
 
 }
+
 __set_iptables_nat() {
     for a in {1..2}; do
         iptables -t nat -D POSTROUTING "$(iptables -t nat -nvL POSTROUTING --line-numbers | grep 'vnic.static.+' | awk '{print $1}' | head -1)" 2>/dev/null
