@@ -134,8 +134,6 @@ __read_config() {
 
 }
 
-__read_config
-
 __mian() {
     __set_manage_route_table
     ip a | grep -Eo 'vinc.static.[0-9]{3}' | sort -u | xargs -n1 -I {} echo 'ip link set {} down;  ip link del dev {}' | sh
