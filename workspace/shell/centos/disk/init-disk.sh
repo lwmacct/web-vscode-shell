@@ -50,6 +50,7 @@ __formatting() {
             else
                 _p="1"
             fi
+            echo $_p
             mkfs.xfs -f "${_item}${_p}" >/dev/null 2>&1
             xfs_admin -L data "${_item}${_p}" >/dev/null 2>&1
         else
