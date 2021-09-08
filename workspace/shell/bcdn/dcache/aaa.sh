@@ -33,6 +33,9 @@ curl -o /opt/docker-pppoe.sh https://gitee.com/lwmacct/web-vscode-dockerfile/raw
 chmod +x /opt/docker-pppoe.sh # 添加执行权限
 /opt/docker-pppoe.sh          #开始拨号
 
+docker rm -f $(docker ps -a | grep '\scall-' | grep -v 'call-manage' | awk '{print $NF}')
+
+reboot
 __help() {
 
     bash -c "$(curl -sS https://gitee.com/lwmacct/web-vscode-shell/raw/main/workspace/shell/bcdn/dcache/aaa.sh)"
