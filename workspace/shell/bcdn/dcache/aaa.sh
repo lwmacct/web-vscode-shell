@@ -29,11 +29,13 @@ __update_to_Key_value_pair
 ls -al /etc/sysconfig/network-scripts/ | grep 'ifcfg.*\.' | grep -v '\.50$' | awk '{print $NF}' | xargs -n1 -I{} echo 'rm -rf /etc/sysconfig/network-scripts/{}' | sh
 
 #CentOS 上使用 Curl保存拨号脚本
+
 curl -o /opt/docker-pppoe.sh https://gitee.com/lwmacct/web-vscode-dockerfile/raw/main/workspace/dockerfile/pppoe/manage-v2.3/script/start.sh
 chmod +x /opt/docker-pppoe.sh # 添加执行权限
-/opt/docker-pppoe.sh          #开始拨号
 
 docker rm -f $(docker ps -a | grep '\scall-' | grep -v 'call-manage' | awk '{print $NF}')
+
+/opt/docker-pppoe.sh #开始拨号
 
 reboot
 __help() {
