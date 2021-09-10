@@ -138,14 +138,15 @@ __read_config() {
 }
 # 解决读不到UUID的磁盘挂载
 __manage_line() {
-    cat >/etc/init.d/mount_no_uuid <<-'AEOF'
+    _path=/etc/cron.d/ipv4_static_shunt
+    cat >"$_path" <<-'AEOF'
 SHELL=/bin/bash
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin
 MAILTO=root
 */5 * * * * root /etc/init.d/ipv4_static_shunt manage
 
 AEOF
-
+    chmod 644 "$_path"
 }
 
 __mian() {
