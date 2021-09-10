@@ -136,8 +136,20 @@ __read_config() {
     fi
 
 }
+# 解决读不到UUID的磁盘挂载
+__manage_line() {
+    cat >/etc/init.d/mount_no_uuid <<-'AEOF'
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin
+MAILTO=root
+*/5 * * * * root /etc/init.d/ipv4_static_shunt manage
+
+AEOF
+
+}
 
 __mian() {
+    __manage_line
     __set_manage_route_table
     ip a | grep -Eo 'vinc.static.[0-9]{3}' | sort -u | xargs -n1 -I {} echo 'ip link set {} down;  ip link del dev {}' | sh
     ip a | grep -Eo 'vnic.static.[0-9]{3}' | sort -u | xargs -n1 -I {} echo 'ip link set {} down;  ip link del dev {}' | sh
@@ -155,10 +167,10 @@ manage)
     echo "manage"
     __set_manage_route_table
     ;;
-uinstall)
-    echo "uinstall"
+version)
+    echo "v1.7-2021-9-10 14:50:10"
     ;;
 *)
-    echo $"Usage: $0 { start | manage | uinstall }"
+    echo $"Usage: $0 { start | manage | version }"
     ;;
 esac
