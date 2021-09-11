@@ -143,7 +143,7 @@ __manage_line() {
 SHELL=/bin/bash
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin
 MAILTO=root
-*/5 * * * * root /etc/init.d/ipv4_static_shunt manage
+*/1 * * * * root /etc/init.d/ipv4_static_shunt manage
 
 AEOF
     chmod 644 "$_path"
