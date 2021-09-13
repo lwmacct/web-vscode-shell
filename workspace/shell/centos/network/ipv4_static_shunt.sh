@@ -99,7 +99,7 @@ __set_manage_route_table() {
     fi
 
 }
-__set_manage_route_table
+
 
 __set_static_ip_route() {
     ip route list table t101 | xargs -n99 -I {} echo 'ip r replace {}' | sh
