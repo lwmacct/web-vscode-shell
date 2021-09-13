@@ -169,7 +169,7 @@ manage)
     __set_manage_route_table
     ;;
 version)
-    echo "v1.7-2021-9-10 14:50:10"
+    echo "v1.8-2021-9-13 13:59:15"
     ;;
 *)
     echo $"Usage: $0 { start | manage | version }"
