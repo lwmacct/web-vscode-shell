@@ -38,7 +38,7 @@ __formatting() {
         fi
 
         if ((_is_label != 1)); then
-            dd if=/dev/zero of="$_item" bs=1M count=16 >/dev/null 2>&1
+            dd if=/dev/zero of="$_item" bs=1M count=128 >/dev/null 2>&1
             parted -s "$_item" mklabel gpt
             parted -s "$_item" mkpart lwmacct xfs 0% 100%
             echo '磁盘: '"$_item 正在格式化..."
