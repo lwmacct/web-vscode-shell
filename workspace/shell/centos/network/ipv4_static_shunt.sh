@@ -17,7 +17,8 @@ __set_vnic() {
     _vnic_macvlan="vnic.static.$_mete"
 
     # 添加新的  macvlan
-    ip link add link "$_vnic_name" dev "$_vnic_macvlan" type macvlan mode private
+    _mac=$(openssl rand -hex 12 | sed -e 's/^\(..\)\(..\)\(..\)\(..\)\(..\).*$/88:\1:\2:\3:\4:\5/')
+    ip link add link "$_vnic_name" dev "$_vnic_macvlan" address "$_mac" type macvlan mode private
 
     # 设置 macvlan IP地址
     ip addr add "$_ip_mask" dev "$_vnic_macvlan"
@@ -99,7 +100,6 @@ __set_manage_route_table() {
     fi
 
 }
-
 
 __set_static_ip_route() {
     ip route list table t101 | xargs -n99 -I {} echo 'ip r replace {}' | sh
