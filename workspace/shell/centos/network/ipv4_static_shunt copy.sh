@@ -6,11 +6,12 @@ __del_old_interface() {
         _have_ip=$(ip a show $item | grep 'inet\s' -c)
         # echo "${item} --  $_have_ip"
         if ((_have_ip == 0)); then
-            # echo "$item"
-            ip link set "$item" down
-            ip link del dev "$item"
+            echo "$item"
+            # ip link set "$item" down
+            # ip link del dev "$item"
         fi
     done
 }
 
 __del_old_interface
+ 
