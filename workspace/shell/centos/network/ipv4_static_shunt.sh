@@ -9,7 +9,8 @@ __set_vnic() {
         _vnic_name="$_nic"
     else
         _vnic_name="$_nic.$_vlan"
-        ip link add link "$_nic" name "$_vnic_name" type vlan id "$_vlan" 2>/dev/null
+        _mac=$(openssl rand -hex 12 | sed -e 's/^\(..\)\(..\)\(..\)\(..\)\(..\).*$/88:\1:\2:\3:\4:\5/')
+        ip link add link "$_nic" name "$_vnic_name" address "$_mac" type vlan id "$_vlan" 2>/dev/null
     fi
     ip link set "$_vnic_name" up
 
