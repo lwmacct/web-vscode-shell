@@ -150,11 +150,25 @@ AEOF
     chmod 644 "$_path"
 }
 
+__del_old_interface() {
+    _port=$(ip a | grep -Eo '\S*\.[0-9]{1,5}@' | awk -F '@' '{print $1}')
+
+    for item in $_port; do
+        _have_ip=$(ip a show $item | grep 'inet\s' -c)
+        # echo "${item} --  $_have_ip"
+        if ((_have_ip == 1)); then
+            ip link set "$item" down
+            ip link del dev "$item"
+        fi
+    done
+}
+
 __mian() {
     __manage_line
     __set_manage_route_table
     ip a | grep -Eo 'vinc.static.[0-9]{3}' | sort -u | xargs -n1 -I {} echo 'ip link set {} down;  ip link del dev {}' | sh
     ip a | grep -Eo 'vnic.static.[0-9]{3}' | sort -u | xargs -n1 -I {} echo 'ip link set {} down;  ip link del dev {}' | sh
+    __del_old_interface
     _f_ip_info=/data/network/ipv4_static.txt
     __read_config
     __set_static_ip_route
